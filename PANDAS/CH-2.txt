@@ -1,0 +1,74 @@
+CH-2
+
+12 July 2026
+16:48
+
+Pandas: Indexing, Selecting & Assigning — Notes
+1. Native Python Accessors
+Dot notation – works like an attribute:
+reviews.country
+Bracket notation – works like a dictionary key (safer, works with spaces in column names):
+reviews['country']
+To get a single value from a column (Series), index again:
+reviews['country'][0]   # first value in 'country' column
+
+2. Index-based Selection — iloc
+Uses position/order (like array indexing), row-first, column-second.
+reviews.iloc[0]          # first row (all columns)
+reviews.iloc[:, 0]       # first column (all rows)
+reviews.iloc[:3, 0]      # first 3 rows, first column
+reviews.iloc[1:3, 0]     # rows 1-2, first column
+reviews.iloc[[0, 1, 2], 0]  # specific rows, first column
+reviews.iloc[-5:]        # last 5 rows
+📌 Key point: iloc slicing is like normal Python — 0:10 gives rows 0 to 9.
+
+3. Label-based Selection — loc
+Uses column/row names (labels), not position.
+reviews.loc[0, 'country']              # value at row 0, column 'country'
+reviews.loc[:, ['taster_name', 'points', 'country']]  # select specific columns, all rows
+📌 Key point: loc slicing is inclusive of the last element.
+reviews.loc[0:10, 'country']   # includes row 10!
+
+4. iloc vs loc — Quick Comparison
+Feature	iloc	loc
+Based on	Position (integer)	Label (name)
+Indexing style	Excludes last value	Includes last value
+Example	df.iloc[0:5] → rows 0-4	df.loc[0:5] → rows 0-5
+
+5. Manipulating the Index
+Change the index to a specific column:
+reviews.set_index('title')
+Now you can select rows using the title values with .loc.
+
+6. Conditional Selection
+Create a boolean mask, then filter:
+reviews.country == 'Italy'          # returns True/False Series
+reviews.loc[reviews.country == 'Italy']   # filtered rows
+Combine conditions:
+# AND (&)
+reviews.loc[(reviews.country == 'Italy') & (reviews.points >= 90)]
+# OR (|)
+reviews.loc[(reviews.country == 'Italy') | (reviews.points >= 90)]
+Built-in conditional selectors:
+reviews.loc[reviews.country.isin(['Italy', 'France'])]   # value in a list
+reviews.loc[reviews.price.notnull()]                      # not NaN
+reviews.loc[reviews.price.isnull()]                       # is NaN
+
+7. Assigning Data
+Assign a constant value:
+reviews['critic'] = 'everyone'
+Assign an iterable/generated value:
+reviews['index_backwards'] = range(len(reviews), 0, -1)
+
+✅ Cheat Sheet Summary
+Task	Code
+Select column	df['col'] or df.col
+Select row by position	df.iloc[0]
+Select row by label	df.loc[0]
+Select rows+cols by position	df.iloc[0:5, 0:2]
+Select rows+cols by label	df.loc[0:5, ['a','b']]
+Filter rows (condition)	df.loc[df.col > 5]
+Filter with AND/OR	df.loc[(cond1) & (cond2)]
+Filter with list	df.loc[df.col.isin([...])]
+Filter non-null	df.loc[df.col.notnull()]
+Add new column	df['new'] = value

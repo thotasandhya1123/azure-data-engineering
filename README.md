@@ -26,3 +26,6 @@ Built complete Azure DE pipeline:
 Raw Data → ADF → Bronze Layer
 → Databricks → Silver Layer
 → Gold Layer → Synapse Analytics
+
+
+
